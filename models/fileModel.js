@@ -1,18 +1,16 @@
 const mongoose = require('mongoose');
 
-const Status = { Uploaded: 'Uploaded', Zipped: 'Zipped' };
-
 const fileSchema = new mongoose.Schema({
   name: {
     type: String,
     require: [true, 'Name required!'],
   },
   body: {
-    type: String,
-    require: [true, 'body required!'],
+    type: Buffer,
+    require: [true, 'Body required!'],
   },
   status: {
-    type: Status,
+    type: Number,
     require: [true, 'Status required!'],
   },
 });

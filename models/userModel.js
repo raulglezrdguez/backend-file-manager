@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     require: [true, 'Password required!'],
   },
+  createdAt: {
+    type: String,
+    require: [true, 'CreatedAt required!'],
+  },
 });
 
 const User = mongoose.Model('User', userSchema);

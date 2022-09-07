@@ -10,6 +10,14 @@ Clone de project:
 git clone https://github.com/raulglezrdguez/backend-file-manager.git
 ```
 
+Install modules:
+
+```bash
+npm install
+# or
+yarn
+```
+
 Run the development server:
 
 ```bash

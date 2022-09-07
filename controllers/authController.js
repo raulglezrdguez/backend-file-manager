@@ -7,6 +7,7 @@ const Status = require('../util/userStatus');
 const {
   validateSignUpInput,
   validateForgetPassInput,
+  validateLoginInput,
 } = require('../util/validators');
 
 function generateToken(user, expiresIn) {
@@ -147,6 +148,51 @@ exports.activate = async (req, res) => {
           name: userDB.name,
           token,
         });
+      } catch (err) {
+        return res.status(500).send({ general: 'Internal server error' });
+      }
+    } else {
+      return res.status(400).send({ general: 'Invalid data' });
+    }
+  } else {
+    return res.status(400).send({ general: 'Invalid data' });
+  }
+};
+
+exports.login = async (req, res) => {
+  if (req && req.body) {
+    const { email, password } = req.body;
+
+    if (email && password) {
+      const { errors, valid } = validateLoginInput(email, password);
+      if (!valid) {
+        return res.status(400).send(errors);
+      }
+
+      try {
+        const user = await User.findOne({ email });
+        if (!user) {
+          return res.status(404).send({ email: 'User not found' });
+        }
+
+        if (user.status === Status.Active) {
+          const match = bcrypt.compare(password, user.password);
+          if (!match) {
+            return res.status(400).send({ password: 'Incorrect password' });
+          }
+
+          const token = generateToken(user, '7d');
+
+          return res.send({
+            id: user._id,
+            createdAt: user.createdAt,
+            email: user.email,
+            name: user.name,
+            token,
+          });
+        } else {
+          return res.status(401).send({ general: 'User unregistered' });
+        }
       } catch (err) {
         return res.status(500).send({ general: 'Internal server error' });
       }

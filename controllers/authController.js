@@ -129,7 +129,7 @@ exports.activate = async (req, res) => {
           return res.status(400).send({ password: 'Incorrect password' });
         }
 
-        if (userDB.status === 0) userDB.status = 1;
+        if (userDB.status === Status.Created) userDB.status = Status.Active;
         await userDB.save();
 
         const token = generateToken(userDB, '7d');
@@ -137,15 +137,8 @@ exports.activate = async (req, res) => {
         return res.send({
           id: userDB._id,
           createdAt: userDB.createdAt,
-          dislikes: userDB.dislikes,
-          dislikesCount: userDB.dislikesCount,
           email: userDB.email,
-          likes: userDB.likes,
-          likesCount: userDB.likesCount,
-          nick: userDB.nick,
-          search: userDB.search,
-          status: userDB.status,
-          tags: userDB.tags,
+          name: userDB.name,
           token,
         });
       } catch (err) {

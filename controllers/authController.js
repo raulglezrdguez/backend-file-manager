@@ -4,7 +4,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const transporter = require('../util/transporter');
 const Status = require('../util/userStatus');
-const { validateSignUpInput } = require('../util/validators');
+const {
+  validateSignUpInput,
+  validateForgetPassInput,
+} = require('../util/validators');
 
 function generateToken(user, expiresIn) {
   return jwt.sign(
@@ -140,6 +143,63 @@ exports.activate = async (req, res) => {
           email: userDB.email,
           name: userDB.name,
           token,
+        });
+      } catch (err) {
+        return res.status(500).send({ general: 'Internal server error' });
+      }
+    } else {
+      return res.status(400).send({ general: 'Invalid data' });
+    }
+  } else {
+    return res.status(400).send({ general: 'Invalid data' });
+  }
+};
+
+exports.forgotpass = async (req, res) => {
+  if (req && req.body) {
+    const { email, password, confirmPassword } = req.body;
+
+    if (email && password && confirmPassword) {
+      const { errors, valid } = validateForgetPassInput(
+        email,
+        password,
+        confirmPassword
+      );
+      if (!valid) {
+        return res.status(400).send(errors);
+      }
+
+      try {
+        // Confirm user exist
+        const userDB = await User.findOne({ email });
+        if (!userDB) {
+          return res.status(404).send({ email: 'email does not exists' });
+        }
+
+        // Hash password
+        passwordHash = await bcrypt.hash(password, 12);
+
+        const token = jwt.sign(
+          {
+            id: userDB._id,
+            name: userDB.name,
+            email,
+            password: passwordHash,
+          },
+          process.env.SECRET_KEY,
+          { expiresIn: '7d' }
+        );
+
+        // send email
+        await transporter.sendMail({
+          from: `${process.env.EMAIL_USER}`, // sender address
+          to: `${email}`, // list of receivers
+          subject: 'FileManager: recovery password', // Subject line
+          html: `<p><b>${userDB.name}</b>,</p><p>Please use the following token to complete the recovery password process:</p><br/><p>${token}</p><br/><p>Visit: <a href="${process.env.HOST}">${process.env.HOST}</a>, or use your FileManager movil app.</p><p><b>FileManager team</b></p>`, // html body
+        });
+
+        return res.send({
+          token: '',
         });
       } catch (err) {
         return res.status(500).send({ general: 'Internal server error' });

@@ -35,6 +35,10 @@ connetWithRetry();
 
 app.use(expressMidleware);
 
+app.get('/', (req, res) => {
+  res.send('<h2>Hello</h2>');
+});
+
 app.use('/auth', authRouter);
 
 const port = process.env.PORT || 3000;

@@ -41,6 +41,6 @@ app.get('/', (req, res) => {
 
 app.use('/auth', authRouter);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.listen(port, () => console.log(`backend ready on port: ${port}`));

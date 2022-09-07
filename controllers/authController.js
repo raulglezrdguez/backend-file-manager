@@ -4,6 +4,18 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const { validateSignUpInput } = require('../util/validators');
 
+function generateToken(user, expiresIn) {
+  return jwt.sign(
+    {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    },
+    process.env.SECRET_KEY,
+    { expiresIn }
+  );
+}
+
 exports.signUp = async (req, res) => {
   if (req && req.body) {
     const { name, email, password, confirmPassword } = req.body;

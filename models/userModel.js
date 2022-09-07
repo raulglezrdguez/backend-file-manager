@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     require: [true, 'CreatedAt required!'],
   },
+  status: {
+    type: Number,
+    require: [true, 'Status required!'],
+  },
 });
 
 const User = mongoose.Model('User', userSchema);

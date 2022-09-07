@@ -211,3 +211,72 @@ exports.forgotpass = async (req, res) => {
     return res.status(400).send({ general: 'Invalid data' });
   }
 };
+
+exports.recoverypass = async (req, res) => {
+  if (req && req.body) {
+    const { token, name, email, password, confirmPassword } = req.body;
+
+    if (token && name && email && password && confirmPassword) {
+      const { errors, valid } = validateSignUpInput(
+        name,
+        email,
+        password,
+        confirmPassword
+      );
+      if (!valid) {
+        return res.status(400).send(errors);
+      }
+
+      let userTk;
+      jwt.verify(token, process.env.SECRET_KEY, (err, decodedToken) => {
+        userTk = decodedToken;
+      });
+
+      if (!userTk || !userTk.name || !userTk.email) {
+        return res.status(400).send({ token: 'Invalid token' });
+      }
+
+      // Confirm user exist
+      if (userTk.name !== name) {
+        return res.status(400).send({ nick: 'Name does not match' });
+      }
+      if (userTk.email !== email) {
+        return res.status(400).send({ email: 'email does not match' });
+      }
+
+      try {
+        const match = await bcrypt.compare(password, userTk.password);
+        if (!match) {
+          return res.status(400).send({ password: 'Incorrect new password' });
+        }
+
+        const userDB = await User.findOne({ email });
+        if (!userDB) {
+          return res.status(400).send({ email: 'email does not exists' });
+        }
+
+        // Hash new password
+        const passwordHash = await bcrypt.hash(password, 12);
+        userDB.password = passwordHash;
+        if (userDB.status === Status.Created) userDB.status = Status.Active;
+        await userDB.save();
+
+        const token = generateToken(userDB, '7d');
+
+        return res.send({
+          id: userDB._id,
+          createdAt: userDB.createdAt,
+          email: userDB.email,
+          name: userDB.name,
+          token,
+        });
+      } catch (err) {
+        return res.status(500).send({ general: 'Internal server error' });
+      }
+    } else {
+      return res.status(400).send({ general: 'Invalid data' });
+    }
+  } else {
+    return res.status(400).send({ general: 'Invalid data' });
+  }
+};

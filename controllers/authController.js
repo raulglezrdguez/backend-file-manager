@@ -79,3 +79,80 @@ exports.signUp = async (req, res) => {
     return res.status(400).send({ general: 'Invalid data' });
   }
 };
+
+exports.activate = async (req, res) => {
+  if (req && req.body) {
+    const { token, name, email, password, confirmPassword } = req.body;
+
+    if (token && name && email && password && confirmPassword) {
+      const { errors, valid } = validateSignUpInput(
+        name,
+        email,
+        password,
+        confirmPassword
+      );
+      if (!valid) {
+        return res.status(400).send(errors);
+      }
+
+      if (!token) {
+        return res.status(400).send({ token: 'token expected' });
+      }
+
+      let userTk;
+      jwt.verify(token, process.env.SECRET_KEY, (err, decodedToken) => {
+        userTk = decodedToken;
+      });
+
+      if (!userTk || !userTk.name || !userTk.email) {
+        return res.status(400).send({ token: 'Invalid token' });
+      }
+
+      try {
+        // Confirm user exist
+        if (userTk.name !== name) {
+          return res.status(400).send({ name: 'Name does not match' });
+        }
+        if (userTk.email !== email) {
+          return res.status(400).send({ email: 'email does not match' });
+        }
+
+        const userDB = await User.findOne({ email });
+        if (!userDB) {
+          return res.status(404).send({ email: 'email does not exists' });
+        }
+
+        const match = await bcrypt.compare(password, userDB.password);
+        if (!match) {
+          return res.status(400).send({ password: 'Incorrect password' });
+        }
+
+        if (userDB.status === 0) userDB.status = 1;
+        await userDB.save();
+
+        const token = generateToken(userDB, '7d');
+
+        return res.send({
+          id: userDB._id,
+          createdAt: userDB.createdAt,
+          dislikes: userDB.dislikes,
+          dislikesCount: userDB.dislikesCount,
+          email: userDB.email,
+          likes: userDB.likes,
+          likesCount: userDB.likesCount,
+          nick: userDB.nick,
+          search: userDB.search,
+          status: userDB.status,
+          tags: userDB.tags,
+          token,
+        });
+      } catch (err) {
+        return res.status(500).send({ general: 'Internal server error' });
+      }
+    } else {
+      return res.status(400).send({ general: 'Invalid data' });
+    }
+  } else {
+    return res.status(400).send({ general: 'Invalid data' });
+  }
+};

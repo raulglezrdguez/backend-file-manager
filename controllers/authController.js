@@ -176,7 +176,7 @@ exports.login = async (req, res) => {
         }
 
         if (user.status === Status.Active) {
-          const match = bcrypt.compare(password, user.password);
+          const match = await bcrypt.compare(password, user.password);
           if (!match) {
             return res.status(400).send({ password: 'Incorrect password' });
           }

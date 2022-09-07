@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/userModel');
+const transporter = require('../util/transporter');
 const { validateSignUpInput } = require('../util/validators');
 
 function generateToken(user, expiresIn) {
@@ -60,13 +61,13 @@ exports.signUp = async (req, res) => {
         await transporter.sendMail({
           from: `${process.env.EMAIL_USER}`, // sender address
           to: `${newUser.email}`, // list of receivers
-          subject: 'ShareTA: activate account', // Subject line
-          html: `<p><b>${newUser.nick}</b>,</p><p>Please use the following token to complete the activation process:</p><br/><p>${token}</p><br/><p>Visit: <a href="${process.env.HOST}">${process.env.HOST}</a>, or use your Shareta movil app.</p><p><b>ShareTA team</b></p>`, // html body
+          subject: 'FileManager: activate account', // Subject line
+          html: `<p><b>${newUser.name}</b>,</p><p>Please use the following token to complete the activation process:</p><br/><p>${token}</p><br/><p>Visit: <a href="${process.env.HOST}">${process.env.HOST}</a>, or use your FileManager movil app.</p><p><b>FileManager team</b></p>`, // html body
         });
 
         return res.send({
           email: newUser.email,
-          nick: newUser.nick,
+          name: newUser.name,
         });
       } catch (err) {
         return res.status(500).send({ general: 'Internal server error' });

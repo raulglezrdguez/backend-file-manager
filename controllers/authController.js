@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/userModel');
 const transporter = require('../util/transporter');
+const Status = require('../util/userStatus');
 const { validateSignUpInput } = require('../util/validators');
 
 function generateToken(user, expiresIn) {
@@ -51,6 +52,7 @@ exports.signUp = async (req, res) => {
           email,
           password: passwordHash,
           createdAt: new Date().toISOString(),
+          status: Status.Created,
         });
 
         newUser = await newUser.save();

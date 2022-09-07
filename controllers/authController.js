@@ -23,7 +23,6 @@ function generateToken(user, expiresIn) {
 
 exports.signUp = async (req, res) => {
   if (req && req.body) {
-    console.log(req.body);
     const { name, email, password, confirmPassword } = req.body;
 
     if (name && email && password && confirmPassword) {
@@ -79,12 +78,10 @@ exports.signUp = async (req, res) => {
         return res.status(500).send({ general: 'Internal server error' });
       }
     } else {
-      return res
-        .status(400)
-        .send({
-          general:
-            'Invalid data: required (name, email, password, confirmPassword)',
-        });
+      return res.status(400).send({
+        general:
+          'Invalid data: required (name, email, password, confirmPassword)',
+      });
     }
   } else {
     return res.status(400).send({ general: 'Data required in the body' });

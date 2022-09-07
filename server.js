@@ -23,7 +23,6 @@ const connetWithRetry = () => {
     .connect(mongoUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: false,
     })
     .then(() => console.log('Connected to database'))
     .catch((e) => {

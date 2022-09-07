@@ -1,13 +1,16 @@
-const { sign } = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const User = require('../models/userModel');
+const { validateSignUpInput } = require('../util/validators');
 
 exports.signUp = async (req, res) => {
   if (req && req.body) {
     const { name, email, password, confirmPassword } = req.body;
 
     if (name && email && password && confirmPassword) {
-      const { errors, valid } = validateRegisterInput(
-        nick,
+      const { errors, valid } = validateSignUpInput(
+        name,
         email,
         password,
         confirmPassword
@@ -18,9 +21,9 @@ exports.signUp = async (req, res) => {
 
       try {
         // Confirm user does not exist
-        let userDB = await User.findOne({ nick });
+        let userDB = await User.findOne({ name });
         if (userDB) {
-          return res.status(400).send({ nick: 'Nick already exists' });
+          return res.status(400).send({ name: 'Name already exists' });
         }
         userDB = await User.findOne({ email });
         if (userDB) {
@@ -31,16 +34,9 @@ exports.signUp = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, 12);
 
         let newUser = new User({
-          nick,
+          name,
           email,
           password: passwordHash,
-          tags: [],
-          search: [],
-          likes: [],
-          likesCount: 0,
-          dislikes: [],
-          dislikesCount: 0,
-          status: 0,
           createdAt: new Date().toISOString(),
         });
 

@@ -12,6 +12,7 @@ if (process.env.MONGO_USER === '') {
 }
 
 const authRouter = require('./routes/userRoutes');
+const fileRouter = require('./routes/fileRoutes');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth', authRouter);
+app.use('/file', fileRouter);
 
 const port = process.env.PORT || 4000;
 

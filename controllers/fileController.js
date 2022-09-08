@@ -40,4 +40,16 @@ exports.fileupload = async (req, res) => {
   }
 };
 
-exports.filedownload = async (req, res) => {};
+exports.filedownload = async (req, res, next) => {
+  if (req && req.body) {
+    const { fileId } = req.body;
+    try {
+      const fileDB = await File.findById(fileId);
+      if (!fileDB) {
+        return res.status(400).send({ fileId: 'Not found' });
+      }
+    } catch (err) {
+      return res.status(500).send({ general: 'Internal server error' });
+    }
+  }
+};

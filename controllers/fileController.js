@@ -9,7 +9,7 @@ exports.fileupload = async (req, res) => {
 
   form.parse(req, function (err, fields, files) {
     const oldpath = files.filetoupload.filepath;
-    const newpath = 'C:/Users/Your Name/' + files.filetoupload.originalFilename;
+    const newpath = __dirname + 'files/' + files.filetoupload.originalFilename;
     fs.rename(oldpath, newpath, function (err) {
       if (err) {
         console.log(err);

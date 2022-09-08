@@ -12,9 +12,10 @@ exports.fileupload = async (req, res) => {
     form.parse(req, function (err, fields, files) {
       const oldpath = files.filetoupload.filepath;
       let file = new File({
-        name: files.filetoupload.originalFilename,
+        name: fields.name,
         status: Status.Uploaded,
         body: fs.readFileSync(oldpath),
+        originalFileName: files.filetoupload.originalFilename,
       });
       file
         .save()

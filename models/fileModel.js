@@ -13,6 +13,10 @@ const fileSchema = new mongoose.Schema({
     type: Number,
     require: [true, 'Status required!'],
   },
+  originalFileName: {
+    type: String,
+    require: [true, 'originalFileName required!'],
+  },
 });
 
 const File = mongoose.model('File', fileSchema);

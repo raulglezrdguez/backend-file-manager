@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const formidable = require('formidable');
 
 const File = require('../models/fileModel');
@@ -31,17 +30,4 @@ exports.fileupload = async (req, res) => {
   } catch (err) {
     return res.status(500).send({ general: 'Internal server error' });
   }
-  // const newpath = path.join(
-  //   __dirname,
-  //   '/../',
-  //   '/files/',
-  //   files.filetoupload.originalFilename
-  // );
-  // fs.rename(oldpath, newpath, function (err) {
-  //   if (err) {
-  //     console.log(err);
-  //     return res.status(400).send({ error: err });
-  //   }
-  //   return res.send({ message: 'File uploaded and moved' });
-  // });
 };

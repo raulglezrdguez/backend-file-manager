@@ -41,15 +41,22 @@ exports.fileupload = async (req, res) => {
 };
 
 exports.filedownload = async (req, res, next) => {
-  if (req && req.body) {
-    const { fileId } = req.body;
+  if (req && req.query && req.query.fileId) {
+    const { fileId } = req.query;
+
     try {
       const fileDB = await File.findById(fileId);
       if (!fileDB) {
         return res.status(400).send({ fileId: 'Not found' });
       }
+      res.setHeader('Content-Type', 'image/png');
+      return res.status(200).send(fileDB.body);
     } catch (err) {
-      return res.status(500).send({ general: 'Internal server error' });
+      console.log(err.message);
+
+      return res.status(500).send({ general: 'Database error' });
     }
+  } else {
+    return res.status(500).send({ general: 'Param fileId needed' });
   }
 };

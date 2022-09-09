@@ -141,9 +141,9 @@ exports.getallfiles = async (req, res) => {
       }
 
       // get files
-      const files = await File.find({ status: Status.Zipped }).select(
-        '_id name status body originalFilename createdAt'
-      );
+      const files = await File.find({ status: Status.Zipped })
+        .populate('owner')
+        .select('_id name status body originalFilename createdAt owner');
       const filesSend = [];
       for (let i = 0; i < files.length; i++) {
         filesSend.push({
@@ -152,6 +152,7 @@ exports.getallfiles = async (req, res) => {
           originalFilename: files[i].originalFilename,
           status: files[i].status,
           size: files[i].body.byteLength,
+          owner: files[i].owner.name,
         });
       }
       return res.send(filesSend);

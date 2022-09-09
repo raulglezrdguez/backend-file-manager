@@ -19,7 +19,6 @@ exports.zipFiles = async () => {
       await files[i].save();
     }
   } catch (err) {
-    console.log(err.message);
-    console.error('error zipping files');
+    console.error('error zipping files', err.message);
   }
 };

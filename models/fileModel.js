@@ -1,21 +1,25 @@
 const mongoose = require('mongoose');
 
 const fileSchema = new mongoose.Schema({
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: [true, 'Owner required!'],
+  },
   name: {
     type: String,
-    require: [true, 'Name required!'],
+    required: [true, 'Name required!'],
   },
   body: {
     type: Buffer,
-    require: [true, 'Body required!'],
+    required: [true, 'Body required!'],
   },
   status: {
     type: Number,
-    require: [true, 'Status required!'],
+    required: [true, 'Status required!'],
   },
   originalFileName: {
     type: String,
-    require: [true, 'originalFileName required!'],
+    required: [true, 'originalFileName required!'],
   },
 });
 

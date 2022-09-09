@@ -26,6 +26,10 @@ const fileSchema = new mongoose.Schema({
     type: String,
     required: [true, 'CreatedAt required!'],
   },
+  updatedAt: {
+    type: String,
+    required: [true, 'UpdatedAt required!'],
+  },
 });
 
 const File = mongoose.model('File', fileSchema);

@@ -41,6 +41,7 @@ exports.fileupload = async (req, res) => {
                   name: file.name,
                   status: file.status,
                   originalFilename: file.originalFilename,
+                  size: file.body.byteLength,
                   createdAt: file.createdAt,
                   updatedAt: file.updatedAt,
                 });

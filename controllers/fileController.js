@@ -46,10 +46,10 @@ exports.filedownload = async (req, res, next) => {
 
     try {
       const fileDB = await File.findById(fileId);
-      if (!fileDB) {
-        return res.status(400).send({ fileId: 'Not found' });
+      if (!fileDB || fileDB.status !== Status.Zipped) {
+        return res.status(400).send({ fileId: 'Not found or not compressed' });
       }
-      res.setHeader('Content-Type', 'image/png');
+      res.setHeader('Content-Type', 'application/zip'); // .zip    application/zip
       return res.status(200).send(fileDB.body);
     } catch (err) {
       console.log(err.message);

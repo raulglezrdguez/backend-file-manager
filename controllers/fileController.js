@@ -31,6 +31,7 @@ exports.fileupload = async (req, res) => {
               body: Buffer.from(body),
               originalFilename: files.filetoupload.originalFilename,
               createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
             });
             file
               .save()
@@ -107,7 +108,7 @@ exports.getfiles = async (req, res) => {
 
       // get files
       const files = await File.find({ owner: userId }).select(
-        '_id name status body originalFilename createdAt'
+        '_id name status body originalFilename createdAt updatedAt'
       );
       const filesSend = [];
       for (let i = 0; i < files.length; i++) {
@@ -118,6 +119,7 @@ exports.getfiles = async (req, res) => {
           status: files[i].status,
           size: files[i].body.byteLength,
           createdAt: files[i].createdAt,
+          updatedAt: files[i].updatedAt,
         });
       }
       return res.send(filesSend);
@@ -143,7 +145,9 @@ exports.getallfiles = async (req, res) => {
       // get files
       const files = await File.find({ status: Status.Zipped })
         .populate('owner')
-        .select('_id name status body originalFilename createdAt owner');
+        .select(
+          '_id name status body originalFilename createdAt updatedAt owner'
+        );
       const filesSend = [];
       for (let i = 0; i < files.length; i++) {
         filesSend.push({
@@ -153,6 +157,8 @@ exports.getallfiles = async (req, res) => {
           status: files[i].status,
           size: files[i].body.byteLength,
           owner: files[i].owner.name,
+          createdAt: files[i].createdAt,
+          updatedAt: files[i].updatedAt,
         });
       }
       return res.send(filesSend);
@@ -188,6 +194,7 @@ exports.updatefile = async (req, res) => {
         }
 
         file.name = req.body.name;
+        file.updatedAt = new Date().toISOString();
         file = await file.save();
 
         return res.send({ name: file.name });

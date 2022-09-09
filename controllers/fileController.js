@@ -56,7 +56,7 @@ exports.fileupload = async (req, res) => {
   }
 };
 
-exports.filedownload = async (req, res, next) => {
+exports.filedownload = async (req, res) => {
   if (req && req.user && req.user.id) {
     const userId = req.user.id;
 
@@ -80,8 +80,6 @@ exports.filedownload = async (req, res, next) => {
           res.setHeader('Content-Type', 'application/zip'); // .zip    application/zip
           return res.status(200).send(fileDB.body);
         } catch (err) {
-          console.log(err.message);
-
           return res.status(500).send({ general: 'Database error' });
         }
       } else {
@@ -92,5 +90,27 @@ exports.filedownload = async (req, res, next) => {
     }
   } else {
     return res.status(401).send({ general: 'User not logged in' });
+  }
+};
+
+exports.getfiles = async (req, res) => {
+  if (req && req.user && req.user.id) {
+    const userId = req.user.id;
+
+    try {
+      // Confirm user does exist
+      const userDB = await User.findById(userId);
+      if (!userDB) {
+        return res.status(400).send({ general: 'User does not exists' });
+      }
+
+      // get files
+      const files = await File.find({ owner: userId }).select(
+        '_id name status originalFilename createdAt'
+      );
+    } catch (err) {
+      return res.status(500).send({ general: 'Database error' });
+    }
+  } else {
   }
 };

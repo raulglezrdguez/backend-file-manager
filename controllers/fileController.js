@@ -163,3 +163,41 @@ exports.getallfiles = async (req, res) => {
     return res.status(401).send({ general: 'User not logged in' });
   }
 };
+
+exports.updatefile = async (req, res) => {
+  if (req && req.user && req.user.id) {
+    const userId = req.user.id;
+
+    try {
+      // Confirm user does exist
+      const userDB = await User.findById(userId);
+      if (!userDB) {
+        return res.status(400).send({ general: 'User does not exists' });
+      }
+
+      if (req.body && req.body.fileId && req.body.name) {
+        const fileId = req.body.fileId;
+
+        // get file
+        let file = await File.findById(fileId).select('_id name status');
+        if (!file) {
+          return res.status(400).send({ general: 'File does not exists' });
+        }
+        if (file.owner !== userDB._id) {
+          return res.status(401).send({ general: 'Unauthorized' });
+        }
+
+        file.name = req.body.name;
+        file = await file.save();
+
+        return res.send(file.name);
+      } else {
+        return res.status(500).send({ general: 'fileId and name required' });
+      }
+    } catch (err) {
+      return res.status(500).send({ general: 'Database error' });
+    }
+  } else {
+    return res.status(401).send({ general: 'User not logged in' });
+  }
+};

@@ -208,3 +208,40 @@ exports.updatefile = async (req, res) => {
     return res.status(401).send({ general: 'User not logged in' });
   }
 };
+
+exports.deletefile = async (req, res) => {
+  if (req && req.user && req.user.id) {
+    const userId = req.user.id;
+
+    try {
+      // Confirm user does exist
+      const userDB = await User.findById(userId);
+      if (!userDB) {
+        return res.status(400).send({ general: 'User does not exists' });
+      }
+
+      if (req.body && req.body.fileId) {
+        const fileId = req.body.fileId;
+
+        // get file
+        let file = await File.findById(fileId).select('_id owner');
+        if (!file) {
+          return res.status(400).send({ general: 'File does not exists' });
+        }
+        if (!file.owner.equals(userDB._id)) {
+          return res.status(401).send({ general: 'Unauthorized' });
+        }
+
+        await File.deleteOne({ _id: fileId });
+
+        return res.send({ general: 'File deleted' });
+      } else {
+        return res.status(500).send({ general: 'fileId required' });
+      }
+    } catch (err) {
+      return res.status(500).send({ general: 'Database error' });
+    }
+  } else {
+    return res.status(401).send({ general: 'User not logged in' });
+  }
+};

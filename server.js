@@ -1,11 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cron = require('node-cron');
 
 require('dotenv').config();
 
 const expressMidleware = require('./util/expressMiddleware');
-const zipFile = require('./util/zipFile');
+const { zipFiles } = require('./util/zipFile');
 
 let mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_IP}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`;
 if (process.env.MONGO_USER === '') {
@@ -43,6 +44,11 @@ app.get('/', (req, res) => {
 
 app.use('/auth', authRouter);
 app.use('/file', fileRouter);
+
+// cron.schedule('*/1 * * * *', () => {
+//   zipFile();
+// });
+zipFiles();
 
 const port = process.env.PORT || 4000;
 

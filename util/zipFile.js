@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs').promises;
 const compressing = require('compressing');
 
 const File = require('../models/fileModel');
@@ -7,11 +9,17 @@ exports.zipFiles = async () => {
   try {
     const files = await File.find({ status: Status.Uploaded });
     for (let i = 0; i < files.length; i++) {
-      files[i].body = await compressing.zip.compressFile(files[i].body);
+      const zip = `./files/${files[i].name}.zip`;
+      await compressing.zip.compressFile(files[i].body, zip, {
+        relativePath: './files',
+      });
+      const body = await fs.readFile(zip);
+      files[i].body = Buffer.from(body);
       files[i].status = Status.Zipped;
       await files[i].save();
     }
   } catch (err) {
+    console.log(err.message);
     console.error('error zipping files');
   }
 };

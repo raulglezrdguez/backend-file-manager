@@ -107,11 +107,23 @@ exports.getfiles = async (req, res) => {
 
       // get files
       const files = await File.find({ owner: userId }).select(
-        '_id name status originalFilename createdAt'
+        '_id name status body originalFilename createdAt'
       );
+      const filesSend = [];
+      for (let i = 0; i < files.length; i++) {
+        filesSend.push({
+          id: files[i]._id,
+          name: files[i].name,
+          originalFilename: files[i].originalFilename,
+          status: files[i].status,
+          size: files[i].body.byteLength,
+        });
+      }
+      return res.send(filesSend);
     } catch (err) {
       return res.status(500).send({ general: 'Database error' });
     }
   } else {
+    return res.status(401).send({ general: 'User not logged in' });
   }
 };

@@ -117,6 +117,41 @@ exports.getfiles = async (req, res) => {
           originalFilename: files[i].originalFilename,
           status: files[i].status,
           size: files[i].body.byteLength,
+          createdAt: files[i].createdAt,
+        });
+      }
+      return res.send(filesSend);
+    } catch (err) {
+      return res.status(500).send({ general: 'Database error' });
+    }
+  } else {
+    return res.status(401).send({ general: 'User not logged in' });
+  }
+};
+
+exports.getallfiles = async (req, res) => {
+  if (req && req.user && req.user.id) {
+    const userId = req.user.id;
+
+    try {
+      // Confirm user does exist
+      const userDB = await User.findById(userId);
+      if (!userDB) {
+        return res.status(400).send({ general: 'User does not exists' });
+      }
+
+      // get files
+      const files = await File.find({ status: Status.Zipped }).select(
+        '_id name status body originalFilename createdAt'
+      );
+      const filesSend = [];
+      for (let i = 0; i < files.length; i++) {
+        filesSend.push({
+          id: files[i]._id,
+          name: files[i].name,
+          originalFilename: files[i].originalFilename,
+          status: files[i].status,
+          size: files[i].body.byteLength,
         });
       }
       return res.send(filesSend);

@@ -45,10 +45,9 @@ app.get('/', (req, res) => {
 app.use('/auth', authRouter);
 app.use('/file', fileRouter);
 
-// cron.schedule('*/1 * * * *', () => {
-//   zipFile();
-// });
-zipFiles();
+cron.schedule('*/1 * * * *', () => {
+  zipFiles();
+});
 
 const port = process.env.PORT || 4000;
 

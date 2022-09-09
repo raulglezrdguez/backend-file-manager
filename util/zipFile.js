@@ -8,8 +8,8 @@ const Status = require('./fileStatus');
 exports.zipFiles = async () => {
   try {
     const files = await File.find({ status: Status.Uploaded });
+    const zip = `./files/temp.zip`;
     for (let i = 0; i < files.length; i++) {
-      const zip = `./files/${files[i].name}.zip`;
       await compressing.zip.compressFile(files[i].body, zip, {
         relativePath: './files',
       });

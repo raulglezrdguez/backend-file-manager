@@ -5,6 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const expressMidleware = require('./util/expressMiddleware');
+const zipFile = require('./util/zipFile');
 
 let mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_IP}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`;
 if (process.env.MONGO_USER === '') {

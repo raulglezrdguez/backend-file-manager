@@ -17,9 +17,13 @@ const fileSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Status required!'],
   },
-  originalFileName: {
+  originalFilename: {
     type: String,
     required: [true, 'originalFileName required!'],
+  },
+  createdAt: {
+    type: String,
+    required: [true, 'CreatedAt required!'],
   },
 });
 

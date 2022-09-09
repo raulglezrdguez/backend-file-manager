@@ -36,7 +36,14 @@ exports.fileupload = async (req, res) => {
             file
               .save()
               .then((file) => {
-                return res.send({ message: 'file uploaded' });
+                return res.send({
+                  id: file._id,
+                  name: file.name,
+                  status: file.status,
+                  originalFilename: file.originalFilename,
+                  createdAt: file.createdAt,
+                  updatedAt: file.updatedAt,
+                });
               })
               .catch((err) => {
                 return res

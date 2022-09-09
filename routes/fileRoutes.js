@@ -9,5 +9,6 @@ router.get('/download', fileController.filedownload);
 router.get('/files', fileController.getfiles);
 router.get('/allfiles', fileController.getallfiles);
 router.patch('/file', fileController.updatefile);
+router.delete('/file', fileController.deletefile);
 
 module.exports = router;

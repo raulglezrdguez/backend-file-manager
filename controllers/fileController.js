@@ -197,7 +197,7 @@ exports.updatefile = async (req, res) => {
         file.updatedAt = new Date().toISOString();
         file = await file.save();
 
-        return res.send({ name: file.name });
+        return res.send({ name: file.name, updatedAt: file.updatedAt });
       } else {
         return res.status(500).send({ general: 'fileId and name required' });
       }

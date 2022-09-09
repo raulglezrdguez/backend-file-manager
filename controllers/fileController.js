@@ -29,7 +29,7 @@ exports.fileupload = async (req, res) => {
               name: fields.name,
               status: Status.Uploaded,
               body: Buffer.from(body),
-              originalFileName: files.filetoupload.originalFilename,
+              originalFilename: files.filetoupload.originalFilename,
               createdAt: new Date().toISOString(),
             });
             file

@@ -179,18 +179,18 @@ exports.updatefile = async (req, res) => {
         const fileId = req.body.fileId;
 
         // get file
-        let file = await File.findById(fileId).select('_id name status');
+        let file = await File.findById(fileId).select('_id name status owner');
         if (!file) {
           return res.status(400).send({ general: 'File does not exists' });
         }
-        if (file.owner !== userDB._id) {
+        if (!file.owner.equals(userDB._id)) {
           return res.status(401).send({ general: 'Unauthorized' });
         }
 
         file.name = req.body.name;
         file = await file.save();
 
-        return res.send(file.name);
+        return res.send({ name: file.name });
       } else {
         return res.status(500).send({ general: 'fileId and name required' });
       }

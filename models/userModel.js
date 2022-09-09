@@ -8,20 +8,20 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    require: [true, 'email required!'],
+    required: [true, 'email required!'],
     unique: true,
   },
   password: {
     type: String,
-    require: [true, 'Password required!'],
+    required: [true, 'Password required!'],
   },
   createdAt: {
     type: String,
-    require: [true, 'CreatedAt required!'],
+    required: [true, 'CreatedAt required!'],
   },
   status: {
     type: Number,
-    require: [true, 'Status required!'],
+    required: [true, 'Status required!'],
   },
 });
 

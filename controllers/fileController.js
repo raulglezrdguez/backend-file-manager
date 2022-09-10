@@ -84,7 +84,7 @@ exports.filedownload = async (req, res) => {
           if (!fileDB || fileDB.status !== Status.Zipped) {
             return res
               .status(400)
-              .send({ fileId: 'File not found or not compressed' });
+              .send({ general: 'File not found or not compressed' });
           }
           res.setHeader('Content-Type', 'application/zip'); // .zip    application/zip
           return res.status(200).send(fileDB.body);

@@ -16,7 +16,6 @@ exports.fileupload = async (req, res) => {
       }
 
       const form = new formidable.IncomingForm();
-
       form.parse(req, function (err, fields, files) {
         if (err) {
           return res.status(400).send({ general: 'Error parsing form' });

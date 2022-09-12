@@ -28,4 +28,6 @@ yarn dev
 
 ## Deployed on [Heroku](https://www.heroku.com/)
 
-The backend server have been deployed to the followings links:
+The backend server have been deployed to the following link:
+
+- [raulglezrdguez-file-manager.herokuapp.com/](https://raulglezrdguez-file-manager.herokuapp.com/)

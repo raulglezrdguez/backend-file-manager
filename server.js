@@ -8,7 +8,8 @@ require("dotenv").config();
 const expressMidleware = require("./util/expressMiddleware");
 const { zipFiles } = require("./util/zipFile");
 
-let mongoUrl = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.2xsawxs.mongodb.net/?retryWrites=true&w=majority`;
+// let mongoUrl = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.2xsawxs.mongodb.net/?retryWrites=true&w=majority`;
+let mongoUrl = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@ac-z7qx0rf-shard-00-00.2xsawxs.mongodb.net:27017,ac-z7qx0rf-shard-00-01.2xsawxs.mongodb.net:27017,ac-z7qx0rf-shard-00-02.2xsawxs.mongodb.net:27017/?ssl=true&replicaSet=atlas-bbfw2s-shard-0&authSource=admin&retryWrites=true&w=majority`;
 if (process.env.MONGO_USER === "") {
   mongoUrl = `mongodb://${process.env.MONGO_IP}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`;
 }

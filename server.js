@@ -40,7 +40,7 @@ connetWithRetry();
 app.use(expressMidleware);
 
 app.get("/", (req, res) => {
-  res.send("<h2>Hello backend</h2>");
+  res.send("<h2>Hello backend users</h2>");
 });
 
 app.use("/auth", authRouter);

@@ -1,21 +1,22 @@
 version: "3"
 
-backend-file-manager:
-  build:
-    context: .
-    args:
-      NODE_ENV: development
-  volumnes:
-    - ./:/app:ro
-    - /app/node_modules
-  environment:
-    - PORT=4000
-    - NODE_ENV=development
+services:
+  backend-file-manager:
+    build:
+      context: .
+      args:
+        NODE_ENV: development
+    volumnes:
+      - ./:/app:ro
+      - /app/node_modules
+    environment:
+      - PORT=4000
+      - NODE_ENV=development
 
-    - MONGO_IP=${MONGO_IP}
-    - MONGO_PORT=${MONGO_PORT}
-    - MONGO_DATABASE=${MONGO_DATABASE}
+      - MONGO_IP=${MONGO_IP}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DATABASE=${MONGO_DATABASE}
 
-  # override de CMD command in Dockerfile
-  command: npm run dev
-  # command: node server.js
+    # override de CMD command in Dockerfile
+    command: npm run dev
+    # command: node server.js

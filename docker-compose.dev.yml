@@ -6,7 +6,7 @@ services:
       context: .
       args:
         NODE_ENV: development
-    volumnes:
+    volumes:
       - ./:/app:ro
       - /app/node_modules
     environment:

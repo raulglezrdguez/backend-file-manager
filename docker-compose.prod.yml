@@ -1,0 +1,18 @@
+version: '3'
+
+  backend-file-manager:
+    build:
+      context: . # path to the Dockerfile
+      args: 
+        NODE_ENV: production
+
+    environment:
+      - PORT=4000
+      - NODE_ENV=production
+
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+
+    # override de CMD command in Dockerfile
+    command: node server.js
+

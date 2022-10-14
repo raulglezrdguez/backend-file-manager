@@ -46,6 +46,12 @@ app.get("/", (req, res) => {
 app.use("/auth", authRouter);
 app.use("/file", fileRouter);
 
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Not found",
+  });
+});
+
 cron.schedule("*/1 * * * *", () => {
   zipFiles();
 });

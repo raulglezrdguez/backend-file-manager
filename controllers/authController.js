@@ -1,14 +1,14 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const User = require('../models/userModel');
-const transporter = require('../util/transporter');
-const Status = require('../util/userStatus');
+const User = require("../models/userModel");
+const transporter = require("../util/transporter");
+const Status = require("../util/userStatus");
 const {
   validateSignUpInput,
   validateForgetPassInput,
   validateLoginInput,
-} = require('../util/validators');
+} = require("../util/validators");
 
 function generateToken(user, expiresIn) {
   return jwt.sign(
@@ -41,11 +41,11 @@ exports.signUp = async (req, res) => {
         // Confirm user does not exist
         let userDB = await User.findOne({ name });
         if (userDB) {
-          return res.status(400).send({ name: 'Name already exists' });
+          return res.status(400).send({ name: "Name already exists" });
         }
         userDB = await User.findOne({ email });
         if (userDB) {
-          return res.status(400).send({ email: 'email already exists' });
+          return res.status(400).send({ email: "email already exists" });
         }
 
         // Hash password and create an auth token
@@ -61,13 +61,13 @@ exports.signUp = async (req, res) => {
 
         newUser = await newUser.save();
 
-        const token = generateToken(newUser, '7d');
+        const token = generateToken(newUser, "7d");
 
         // send email
         await transporter.sendMail({
           from: `${process.env.EMAIL_USER}`, // sender address
           to: `${newUser.email}`, // list of receivers
-          subject: 'FileManager: activate account', // Subject line
+          subject: "FileManager: activate account", // Subject line
           html: `<p><b>${newUser.name}</b>,</p><p>Please use the following token to complete the activation process:</p><br/><p>${token}</p><br/><p>Visit: <a href="${process.env.HOST}">${process.env.HOST}</a>, or use your FileManager movil app.</p><p><b>FileManager team</b></p>`, // html body
         });
 
@@ -76,16 +76,16 @@ exports.signUp = async (req, res) => {
           name: newUser.name,
         });
       } catch (err) {
-        return res.status(500).send({ general: 'Internal server error' });
+        return res.status(500).send({ general: "Internal server error" });
       }
     } else {
       return res.status(400).send({
         general:
-          'Invalid data: required (name, email, password, confirmPassword)',
+          "Invalid data: required (name, email, password, confirmPassword)",
       });
     }
   } else {
-    return res.status(400).send({ general: 'Data required in the body' });
+    return res.status(400).send({ general: "Data required in the body" });
   }
 };
 
@@ -105,7 +105,7 @@ exports.activate = async (req, res) => {
       }
 
       if (!token) {
-        return res.status(400).send({ token: 'token expected' });
+        return res.status(400).send({ token: "token expected" });
       }
 
       let userTk;
@@ -114,32 +114,32 @@ exports.activate = async (req, res) => {
       });
 
       if (!userTk || !userTk.name || !userTk.email) {
-        return res.status(400).send({ token: 'Invalid token' });
+        return res.status(400).send({ token: "Invalid token" });
       }
 
       try {
         // Confirm user exist
         if (userTk.name !== name) {
-          return res.status(400).send({ name: 'Name does not match' });
+          return res.status(400).send({ name: "Name does not match" });
         }
         if (userTk.email !== email) {
-          return res.status(400).send({ email: 'email does not match' });
+          return res.status(400).send({ email: "email does not match" });
         }
 
         const userDB = await User.findOne({ email });
         if (!userDB) {
-          return res.status(404).send({ email: 'email does not exists' });
+          return res.status(404).send({ email: "email does not exists" });
         }
 
         const match = await bcrypt.compare(password, userDB.password);
         if (!match) {
-          return res.status(400).send({ password: 'Incorrect password' });
+          return res.status(400).send({ password: "Incorrect password" });
         }
 
         if (userDB.status === Status.Created) userDB.status = Status.Active;
         await userDB.save();
 
-        const token = generateToken(userDB, '7d');
+        const token = generateToken(userDB, "7d");
 
         return res.send({
           id: userDB._id,
@@ -149,13 +149,13 @@ exports.activate = async (req, res) => {
           token,
         });
       } catch (err) {
-        return res.status(500).send({ general: 'Internal server error' });
+        return res.status(500).send({ general: "Internal server error" });
       }
     } else {
-      return res.status(400).send({ general: 'Invalid data' });
+      return res.status(400).send({ general: "Invalid data" });
     }
   } else {
-    return res.status(400).send({ general: 'Invalid data' });
+    return res.status(400).send({ general: "Invalid data" });
   }
 };
 
@@ -172,16 +172,16 @@ exports.login = async (req, res) => {
       try {
         const user = await User.findOne({ email });
         if (!user) {
-          return res.status(404).send({ email: 'User not found' });
+          return res.status(404).send({ email: "User not found" });
         }
 
         if (user.status === Status.Active) {
           const match = await bcrypt.compare(password, user.password);
           if (!match) {
-            return res.status(400).send({ password: 'Incorrect password' });
+            return res.status(400).send({ password: "Incorrect password" });
           }
 
-          const token = generateToken(user, '7d');
+          const token = generateToken(user, "7d");
 
           return res.send({
             id: user._id,
@@ -191,16 +191,16 @@ exports.login = async (req, res) => {
             token,
           });
         } else {
-          return res.status(401).send({ general: 'User unregistered' });
+          return res.status(401).send({ general: "User unregistered" });
         }
       } catch (err) {
-        return res.status(500).send({ general: 'Internal server error' });
+        return res.status(500).send({ general: "Internal server error" });
       }
     } else {
-      return res.status(400).send({ general: 'Invalid data' });
+      return res.status(400).send({ general: "Invalid data" });
     }
   } else {
-    return res.status(400).send({ general: 'Invalid data' });
+    return res.status(400).send({ general: "Invalid data" });
   }
 };
 
@@ -222,11 +222,11 @@ exports.forgotpass = async (req, res) => {
         // Confirm user exist
         const userDB = await User.findOne({ email });
         if (!userDB) {
-          return res.status(404).send({ email: 'email does not exists' });
+          return res.status(404).send({ email: "email does not exists" });
         }
 
         // Hash password
-        passwordHash = await bcrypt.hash(password, 12);
+        const passwordHash = await bcrypt.hash(password, 12);
 
         const token = jwt.sign(
           {
@@ -236,28 +236,28 @@ exports.forgotpass = async (req, res) => {
             password: passwordHash,
           },
           process.env.SECRET_KEY,
-          { expiresIn: '7d' }
+          { expiresIn: "7d" }
         );
 
         // send email
         await transporter.sendMail({
           from: `${process.env.EMAIL_USER}`, // sender address
           to: `${email}`, // list of receivers
-          subject: 'FileManager: recovery password', // Subject line
+          subject: "FileManager: recovery password", // Subject line
           html: `<p><b>${userDB.name}</b>,</p><p>Please use the following token to complete the recovery password process:</p><br/><p>${token}</p><br/><p>Visit: <a href="${process.env.HOST}">${process.env.HOST}</a>, or use your FileManager movil app.</p><p><b>FileManager team</b></p>`, // html body
         });
 
         return res.send({
-          token: '',
+          token: "",
         });
       } catch (err) {
-        return res.status(500).send({ general: 'Internal server error' });
+        return res.status(500).send({ general: "Internal server error" });
       }
     } else {
-      return res.status(400).send({ general: 'Invalid data' });
+      return res.status(400).send({ general: "Invalid data" });
     }
   } else {
-    return res.status(400).send({ general: 'Invalid data' });
+    return res.status(400).send({ general: "Invalid data" });
   }
 };
 
@@ -282,26 +282,26 @@ exports.recoverypass = async (req, res) => {
       });
 
       if (!userTk || !userTk.name || !userTk.email) {
-        return res.status(400).send({ token: 'Invalid token' });
+        return res.status(400).send({ token: "Invalid token" });
       }
 
       // Confirm user exist
       if (userTk.name !== name) {
-        return res.status(400).send({ nick: 'Name does not match' });
+        return res.status(400).send({ nick: "Name does not match" });
       }
       if (userTk.email !== email) {
-        return res.status(400).send({ email: 'email does not match' });
+        return res.status(400).send({ email: "email does not match" });
       }
 
       try {
         const match = await bcrypt.compare(password, userTk.password);
         if (!match) {
-          return res.status(400).send({ password: 'Incorrect new password' });
+          return res.status(400).send({ password: "Incorrect new password" });
         }
 
         const userDB = await User.findOne({ email });
         if (!userDB) {
-          return res.status(400).send({ email: 'email does not exists' });
+          return res.status(400).send({ email: "email does not exists" });
         }
 
         // Hash new password
@@ -310,7 +310,7 @@ exports.recoverypass = async (req, res) => {
         if (userDB.status === Status.Created) userDB.status = Status.Active;
         await userDB.save();
 
-        const token = generateToken(userDB, '7d');
+        const token = generateToken(userDB, "7d");
 
         return res.send({
           id: userDB._id,
@@ -320,12 +320,12 @@ exports.recoverypass = async (req, res) => {
           token,
         });
       } catch (err) {
-        return res.status(500).send({ general: 'Internal server error' });
+        return res.status(500).send({ general: "Internal server error" });
       }
     } else {
-      return res.status(400).send({ general: 'Invalid data' });
+      return res.status(400).send({ general: "Invalid data" });
     }
   } else {
-    return res.status(400).send({ general: 'Invalid data' });
+    return res.status(400).send({ general: "Invalid data" });
   }
 };

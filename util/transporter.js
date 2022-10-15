@@ -16,6 +16,19 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// const transporter = nodemailer.createTransport({
+//   host: process.env.EMAIL_HOST,
+//   port: process.env.EMAIL_PORT,
+//   // authMethod:'NTLM',
+//   secure: false, // upgrade later with STARTTLS
+//   tls: { rejectUnauthorized: false },
+//   // debug:true,
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASSWORD,
+//   },
+// });
+
 transporter
   .verify()
   .then(() => {

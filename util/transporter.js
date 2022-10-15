@@ -1,9 +1,9 @@
-const nodemailer = require("nodemailer");
-const dotenv = require("dotenv");
-dotenv.config({ path: "../.env" });
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+dotenv.config({ path: '../.env' });
 
 const transporter = nodemailer.createTransport({
-  service: "Gmail",
+  service: 'Gmail',
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
   // authMethod:'NTLM',
@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 transporter
   .verify()
   .then(() => {
-    console.log("ready for send emails");
+    console.log('ready for send emails');
   })
   .catch((err) => console.log(err));
 

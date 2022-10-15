@@ -1,12 +1,12 @@
-const dotenv = require("dotenv");
-dotenv.config({ path: "../.env" });
+const dotenv = require('dotenv');
+dotenv.config({ path: '../.env' });
 
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
   let token = null;
   if (req && req.headers && req.headers.authorization) {
-    token = req.headers.authorization.split("Bearer ")[1];
+    token = req.headers.authorization.split('Bearer ')[1];
   }
 
   if (token) {

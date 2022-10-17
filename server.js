@@ -62,8 +62,12 @@ cron.schedule('*/1 * * * *', () => {
 
 const port = process.env.PORT || 4000;
 
-app.listen(port, () => console.log(`backend ready on port: ${port}`));
+const server = app.listen(port, () =>
+  console.log(`backend ready on port: ${port}`)
+);
 
 module.exports = {
   app,
+  mongoose,
+  server,
 };

@@ -32,6 +32,14 @@ const fileSchema = new mongoose.Schema({
   },
 });
 
+fileSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id;
+    delete returnedObject.__v;
+    // delete returnedObject._id;
+  },
+});
+
 const File = mongoose.model('File', fileSchema);
 
 module.exports = File;

@@ -7,7 +7,7 @@
     "dev": "NODE_ENV=development nodemon server.js",
     "lint": "eslint .",
     "start": "NODE_ENV=production node server.js",
-    "test": "NODE_ENV=test jest --verbose",
+    "test": "NODE_ENV=test jest --verbose --detectOpenHandles",
     "test:watch": "npm run test -- --watch"
   },
   "keywords": [],

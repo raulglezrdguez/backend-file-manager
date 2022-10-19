@@ -29,11 +29,11 @@ const transporter = nodemailer.createTransport({
 //   },
 // });
 
-transporter
-  .verify()
-  .then(() => {
-    console.log('ready for send emails');
-  })
-  .catch((err) => console.log(err));
+// transporter
+//   .verify()
+//   .then(() => {
+//     console.log('ready for send emails');
+//   })
+//   .catch((err) => console.log(err));
 
 module.exports = transporter;

@@ -1,26 +1,18 @@
 /* eslint-disable no-undef */
 const supertest = require('supertest');
 const mongoose = require('mongoose');
-// const User = require('../models/userModel');
+const User = require('../models/userModel');
 const { app, server } = require('../server');
 
-// const nodemailer = require('nodemailer');
-
-// const sendMailMock = jest.fn();
-// const verifyMock = jest.fn().mockReturnValue({});
-
-// jest.mock('nodemailer');
-// nodemailer.createTransport.mockReturnValue({
-//   sendMail: sendMailMock,
-//   verify: verifyMock,
-// });
+// mock node-cron
+const cron = require('node-cron');
+jest.mock('node-cron');
+cron.schedule = jest.fn();
 
 const api = supertest(app);
 
-beforeEach(async () => {
-  // await User.deleteMany({})
-  // sendMailMock.mockClear();
-  // nodemailer.createTransport.mockClear();
+beforeAll(async () => {
+  await User.deleteMany({});
 });
 
 test('login return json', async () => {

@@ -11,19 +11,23 @@ cron.schedule = jest.fn();
 
 const api = supertest(app);
 
-beforeAll(async () => {
-  await User.deleteMany({});
-});
+describe('authController', () => {
+  beforeAll(async () => {
+    await User.deleteMany({});
+  });
 
-test('login return json', async () => {
-  await api
-    .post('/auth/login')
-    .send({ user: 'test', password: 'test' })
-    .expect(400)
-    .expect('Content-Type', /application\/json/);
-});
+  describe('login', () => {
+    test('should return json', async () => {
+      await api
+        .post('/auth/login')
+        .send({ user: 'test', password: 'test' })
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+    });
+  });
 
-afterAll(async () => {
-  await mongoose.connection.close();
-  server.close();
+  afterAll(async () => {
+    await mongoose.connection.close();
+    server.close();
+  });
 });

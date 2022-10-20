@@ -46,6 +46,10 @@ describe('authController', () => {
         .expect(400)
         .expect('Content-Type', /application\/json/);
       expect(response.body).toHaveProperty('general');
+      expect(response.body).toEqual({
+        general:
+          'Invalid data: required (name, email, password, confirmPassword)',
+      });
     });
   });
 

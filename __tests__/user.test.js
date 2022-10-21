@@ -54,6 +54,17 @@ describe('authController', () => {
       expect(response.body.general).toContain('Invalid data');
     });
 
+    test('should return invalid name', async () => {
+      const response = await signUpSend({
+        name: 1,
+        email: 'raul',
+        password: 'raul',
+        confirmPassword: 'raul',
+      });
+      expect(response.body).toHaveProperty('name');
+      expect(response.body.name).toContain('Invalid name');
+    });
+
     test('should return name is to short', async () => {
       const response = await signUpSend({
         name: 'r',
@@ -76,6 +87,17 @@ describe('authController', () => {
       expect(response.body.name).toContain('to long');
     });
 
+    test('should return invalid email', async () => {
+      const response = await signUpSend({
+        name: 'raul',
+        email: 1,
+        password: 'raul',
+        confirmPassword: 'raul',
+      });
+      expect(response.body).toHaveProperty('email');
+      expect(response.body.email).toContain('Invalid email');
+    });
+
     test('should return incorrect email', async () => {
       const response = await signUpSend({
         name: 'raul',
@@ -87,6 +109,17 @@ describe('authController', () => {
       expect(response.body.email).toContain('Incorrect email');
     });
 
+    test('should return invalid password', async () => {
+      const response = await signUpSend({
+        name: 'raul',
+        email: 'raul@gmail.com',
+        password: 1,
+        confirmPassword: 'raul',
+      });
+      expect(response.body).toHaveProperty('password');
+      expect(response.body.password).toContain('Invalid password');
+    });
+
     test('should return password to short', async () => {
       const response = await signUpSend({
         name: 'raul',
@@ -96,6 +129,19 @@ describe('authController', () => {
       });
       expect(response.body).toHaveProperty('password');
       expect(response.body.password).toContain('to short');
+    });
+
+    test('should return invalid confirm password', async () => {
+      const response = await signUpSend({
+        name: 'raul',
+        email: 'raul@gmail.com',
+        password: '1234567',
+        confirmPassword: 1,
+      });
+      expect(response.body).toHaveProperty('confirmPassword');
+      expect(response.body.confirmPassword).toContain(
+        'Invalid confirmPassword'
+      );
     });
 
     test('should return passwords dont match', async () => {

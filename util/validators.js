@@ -9,16 +9,23 @@ module.exports.validateSignUpInput = (
 ) => {
   const errors = {};
 
-  if (name.trim().length < 4) {
+  if (typeof name !== 'string') {
+    errors.name = 'Invalid name type';
+  } else if (name.trim().length < 4) {
     errors.name = 'Name is to short';
-  }
-  if (name.trim().length > 15) {
+  } else if (name.trim().length > 15) {
     errors.name = 'Name is to long';
   }
-  if (!email.match(re_email)) {
+  if (typeof email !== 'string') {
+    errors.email = 'Invalid email type';
+  } else if (!email.match(re_email)) {
     errors.email = 'Incorrect email';
   }
-  if (password.length < 6) {
+  if (typeof password !== 'string') {
+    errors.password = 'Invalid password type';
+  } else if (typeof confirmPassword !== 'string') {
+    errors.confirmPassword = 'Invalid confirmPassword type';
+  } else if (password.length < 6) {
     errors.password = 'Password to short';
   } else if (password !== confirmPassword) {
     errors.password = 'Passwords dont match';

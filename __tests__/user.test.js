@@ -14,11 +14,11 @@ cron.schedule = jest.fn();
 
 const api = supertest(app);
 
-const postData = async (endpoint, data) => {
+const postData = async (endpoint, data, status = 200) => {
   return await api
     .post(endpoint)
     .send(data)
-    .expect(400)
+    .expect(status)
     .expect('Content-Type', /application\/json/);
 };
 
@@ -49,95 +49,127 @@ describe('authController', () => {
 
   describe('signUp', () => {
     test('should return invalid data', async () => {
-      const response = await postData('/auth/signup', {});
+      const response = await postData('/auth/signup', {}, 400);
       expect(response.body).toHaveProperty('general');
       expect(response.body.general).toContain('Invalid data');
     });
 
     test('should return invalid name', async () => {
-      const response = await postData('/auth/signup', {
-        name: 1,
-        email: 'raul',
-        password: 'raul',
-        confirmPassword: 'raul',
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 1,
+          email: 'raul',
+          password: 'raul',
+          confirmPassword: 'raul',
+        },
+        400
+      );
       expect(response.body).toHaveProperty('name');
       expect(response.body.name).toContain('Invalid name');
     });
 
     test('should return name is to short', async () => {
-      const response = await postData('/auth/signup', {
-        name: 'r',
-        email: 'raul',
-        password: 'raul',
-        confirmPassword: 'raul',
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 'r',
+          email: 'raul',
+          password: 'raul',
+          confirmPassword: 'raul',
+        },
+        400
+      );
       expect(response.body).toHaveProperty('name');
       expect(response.body.name).toContain('to short');
     });
 
     test('should return name is to long', async () => {
-      const response = await postData('/auth/signup', {
-        name: 'raulglezrdguez1234567890',
-        email: 'raul',
-        password: 'raul',
-        confirmPassword: 'raul',
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 'raulglezrdguez1234567890',
+          email: 'raul',
+          password: 'raul',
+          confirmPassword: 'raul',
+        },
+        400
+      );
       expect(response.body).toHaveProperty('name');
       expect(response.body.name).toContain('to long');
     });
 
     test('should return invalid email', async () => {
-      const response = await postData('/auth/signup', {
-        name: 'raul',
-        email: 1,
-        password: 'raul',
-        confirmPassword: 'raul',
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 'raul',
+          email: 1,
+          password: 'raul',
+          confirmPassword: 'raul',
+        },
+        400
+      );
       expect(response.body).toHaveProperty('email');
       expect(response.body.email).toContain('Invalid email');
     });
 
     test('should return incorrect email', async () => {
-      const response = await postData('/auth/signup', {
-        name: 'raul',
-        email: 'raul',
-        password: 'raul',
-        confirmPassword: 'raul',
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 'raul',
+          email: 'raul',
+          password: 'raul',
+          confirmPassword: 'raul',
+        },
+        400
+      );
       expect(response.body).toHaveProperty('email');
       expect(response.body.email).toContain('Incorrect email');
     });
 
     test('should return invalid password', async () => {
-      const response = await postData('/auth/signup', {
-        name: 'raul',
-        email: 'raul@gmail.com',
-        password: 1,
-        confirmPassword: 'raul',
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 'raul',
+          email: 'raul@gmail.com',
+          password: 1,
+          confirmPassword: 'raul',
+        },
+        400
+      );
       expect(response.body).toHaveProperty('password');
       expect(response.body.password).toContain('Invalid password');
     });
 
     test('should return password to short', async () => {
-      const response = await postData('/auth/signup', {
-        name: 'raul',
-        email: 'raul@gamil.com',
-        password: '12345',
-        confirmPassword: '123456',
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 'raul',
+          email: 'raul@gamil.com',
+          password: '12345',
+          confirmPassword: '123456',
+        },
+        400
+      );
       expect(response.body).toHaveProperty('password');
       expect(response.body.password).toContain('to short');
     });
 
     test('should return invalid confirm password', async () => {
-      const response = await postData('/auth/signup', {
-        name: 'raul',
-        email: 'raul@gmail.com',
-        password: '1234567',
-        confirmPassword: 1,
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 'raul',
+          email: 'raul@gmail.com',
+          password: '1234567',
+          confirmPassword: 1,
+        },
+        400
+      );
       expect(response.body).toHaveProperty('confirmPassword');
       expect(response.body.confirmPassword).toContain(
         'Invalid confirmPassword'
@@ -145,12 +177,16 @@ describe('authController', () => {
     });
 
     test('should return passwords dont match', async () => {
-      const response = await postData('/auth/signup', {
-        name: 'raul',
-        email: 'raul@gamil.com',
-        password: '1234567',
-        confirmPassword: '123',
-      });
+      const response = await postData(
+        '/auth/signup',
+        {
+          name: 'raul',
+          email: 'raul@gamil.com',
+          password: '1234567',
+          confirmPassword: '123',
+        },
+        400
+      );
       expect(response.body).toHaveProperty('password');
       expect(response.body).toHaveProperty('confirmPassword');
       expect(response.body.password).toContain('match');
@@ -160,7 +196,7 @@ describe('authController', () => {
 
   describe('login', () => {
     test('should return json', async () => {
-      postData('/auth/login', { user: 'test', password: 'test' });
+      postData('/auth/login', { user: 'test', password: 'test' }, 400);
     });
   });
 

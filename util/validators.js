@@ -15,12 +15,8 @@ module.exports.validateSignUpInput = (
   if (name.trim().length > 15) {
     errors.name = 'Name is to long';
   }
-  if (email.trim() === '') {
-    errors.email = 'Email is empty';
-  } else {
-    if (!email.match(re_email)) {
-      errors.email = 'Incorrect email';
-    }
+  if (!email.match(re_email)) {
+    errors.email = 'Incorrect email';
   }
   if (password.trim() === '') {
     errors.password = 'Password is empty';

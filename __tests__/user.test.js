@@ -75,6 +75,17 @@ describe('authController', () => {
       expect(response.body).toHaveProperty('name');
       expect(response.body.name).toContain('to long');
     });
+
+    test('should return incorrect email', async () => {
+      const response = await signUpSend({
+        name: 'raul',
+        email: 'raul',
+        password: 'raul',
+        confirmPassword: 'raul',
+      });
+      expect(response.body).toHaveProperty('email');
+      expect(response.body.email).toContain('Incorrect email');
+    });
   });
 
   describe('login', () => {

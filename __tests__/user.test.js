@@ -14,10 +14,10 @@ cron.schedule = jest.fn();
 
 const api = supertest(app);
 
-const signUpSend = async (user) => {
+const postData = async (endpoint, data) => {
   return await api
-    .post('/auth/signup')
-    .send(user)
+    .post(endpoint)
+    .send(data)
     .expect(400)
     .expect('Content-Type', /application\/json/);
 };
@@ -49,13 +49,13 @@ describe('authController', () => {
 
   describe('signUp', () => {
     test('should return invalid data', async () => {
-      const response = await signUpSend({});
+      const response = await postData('/auth/signup', {});
       expect(response.body).toHaveProperty('general');
       expect(response.body.general).toContain('Invalid data');
     });
 
     test('should return invalid name', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 1,
         email: 'raul',
         password: 'raul',
@@ -66,7 +66,7 @@ describe('authController', () => {
     });
 
     test('should return name is to short', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 'r',
         email: 'raul',
         password: 'raul',
@@ -77,7 +77,7 @@ describe('authController', () => {
     });
 
     test('should return name is to long', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 'raulglezrdguez1234567890',
         email: 'raul',
         password: 'raul',
@@ -88,7 +88,7 @@ describe('authController', () => {
     });
 
     test('should return invalid email', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 'raul',
         email: 1,
         password: 'raul',
@@ -99,7 +99,7 @@ describe('authController', () => {
     });
 
     test('should return incorrect email', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 'raul',
         email: 'raul',
         password: 'raul',
@@ -110,7 +110,7 @@ describe('authController', () => {
     });
 
     test('should return invalid password', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 'raul',
         email: 'raul@gmail.com',
         password: 1,
@@ -121,7 +121,7 @@ describe('authController', () => {
     });
 
     test('should return password to short', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 'raul',
         email: 'raul@gamil.com',
         password: '12345',
@@ -132,7 +132,7 @@ describe('authController', () => {
     });
 
     test('should return invalid confirm password', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 'raul',
         email: 'raul@gmail.com',
         password: '1234567',
@@ -145,7 +145,7 @@ describe('authController', () => {
     });
 
     test('should return passwords dont match', async () => {
-      const response = await signUpSend({
+      const response = await postData('/auth/signup', {
         name: 'raul',
         email: 'raul@gamil.com',
         password: '1234567',
@@ -160,11 +160,7 @@ describe('authController', () => {
 
   describe('login', () => {
     test('should return json', async () => {
-      await api
-        .post('/auth/login')
-        .send({ user: 'test', password: 'test' })
-        .expect(400)
-        .expect('Content-Type', /application\/json/);
+      postData('/auth/login', { user: 'test', password: 'test' });
     });
   });
 

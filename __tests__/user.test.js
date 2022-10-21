@@ -14,6 +14,14 @@ cron.schedule = jest.fn();
 
 const api = supertest(app);
 
+const signUpSend = async (user) => {
+  return await api
+    .post('/auth/signup')
+    .send(user)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+};
+
 const initialUsers = [
   {
     name: 'rauljc',
@@ -41,28 +49,31 @@ describe('authController', () => {
 
   describe('signUp', () => {
     test('should return invalid data', async () => {
-      const response = await api
-        .post('/auth/signup')
-        .send({})
-        .expect(400)
-        .expect('Content-Type', /application\/json/);
+      const response = await signUpSend({});
       expect(response.body).toHaveProperty('general');
       expect(response.body.general).toContain('Invalid data');
     });
 
     test('should return name is to short', async () => {
-      const response = await api
-        .post('/auth/signup')
-        .send({
-          name: 'r',
-          email: 'raul',
-          password: 'raul',
-          confirmPassword: 'raul',
-        })
-        .expect(400)
-        .expect('Content-Type', /application\/json/);
+      const response = await signUpSend({
+        name: 'r',
+        email: 'raul',
+        password: 'raul',
+        confirmPassword: 'raul',
+      });
       expect(response.body).toHaveProperty('name');
       expect(response.body.name).toContain('to short');
+    });
+
+    test('should return name is to long', async () => {
+      const response = await signUpSend({
+        name: 'raulglezrdguez1234567890',
+        email: 'raul',
+        password: 'raul',
+        confirmPassword: 'raul',
+      });
+      expect(response.body).toHaveProperty('name');
+      expect(response.body.name).toContain('to long');
     });
   });
 

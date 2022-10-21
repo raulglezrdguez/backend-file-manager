@@ -18,10 +18,8 @@ module.exports.validateSignUpInput = (
   if (!email.match(re_email)) {
     errors.email = 'Incorrect email';
   }
-  if (password.trim() === '') {
-    errors.password = 'Password is empty';
-  } else if (password.length < 6) {
-    errors.password = 'Password less than 6 characters';
+  if (password.length < 6) {
+    errors.password = 'Password to short';
   } else if (password !== confirmPassword) {
     errors.password = 'Passwords dont match';
     errors.confirmPassword = 'Passwords dont match';

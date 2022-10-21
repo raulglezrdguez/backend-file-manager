@@ -86,6 +86,30 @@ describe('authController', () => {
       expect(response.body).toHaveProperty('email');
       expect(response.body.email).toContain('Incorrect email');
     });
+
+    test('should return password to short', async () => {
+      const response = await signUpSend({
+        name: 'raul',
+        email: 'raul@gamil.com',
+        password: '12345',
+        confirmPassword: '123456',
+      });
+      expect(response.body).toHaveProperty('password');
+      expect(response.body.password).toContain('to short');
+    });
+
+    test('should return passwords dont match', async () => {
+      const response = await signUpSend({
+        name: 'raul',
+        email: 'raul@gamil.com',
+        password: '1234567',
+        confirmPassword: '123',
+      });
+      expect(response.body).toHaveProperty('password');
+      expect(response.body).toHaveProperty('confirmPassword');
+      expect(response.body.password).toContain('match');
+      expect(response.body.confirmPassword).toContain('match');
+    });
   });
 
   describe('login', () => {

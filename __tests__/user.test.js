@@ -40,16 +40,29 @@ describe('authController', () => {
   });
 
   describe('signUp', () => {
-    test('should return data required json', async () => {
+    test('should return invalid data', async () => {
       const response = await api
         .post('/auth/signup')
+        .send({})
         .expect(400)
         .expect('Content-Type', /application\/json/);
       expect(response.body).toHaveProperty('general');
-      expect(response.body).toEqual({
-        general:
-          'Invalid data: required (name, email, password, confirmPassword)',
-      });
+      expect(response.body.general).toContain('Invalid data');
+    });
+
+    test('should return name is to short', async () => {
+      const response = await api
+        .post('/auth/signup')
+        .send({
+          name: 'r',
+          email: 'raul',
+          password: 'raul',
+          confirmPassword: 'raul',
+        })
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+      expect(response.body).toHaveProperty('name');
+      expect(response.body.name).toContain('to short');
     });
   });
 

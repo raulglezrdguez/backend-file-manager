@@ -9,8 +9,11 @@ module.exports.validateSignUpInput = (
 ) => {
   const errors = {};
 
-  if (name.trim() === '') {
-    errors.name = 'Name is empty';
+  if (name.trim().length < 4) {
+    errors.name = 'Name is to short';
+  }
+  if (name.trim().length > 15) {
+    errors.name = 'Name is to long';
   }
   if (email.trim() === '') {
     errors.email = 'Email is empty';

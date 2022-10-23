@@ -3,14 +3,9 @@ const supertest = require('supertest');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const User = require('../models/userModel');
 const { app, server } = require('../server');
-
-// mock node-cron
-const cron = require('node-cron');
+const User = require('../models/userModel');
 const Status = require('../util/userStatus');
-jest.mock('node-cron');
-cron.schedule = jest.fn();
 
 const api = supertest(app);
 
